@@ -6,7 +6,7 @@
     <string>com.geforcenow.awdlcontrol</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/comicbit/Projects/GfN_network/script.sh</string>
+        <string>/path/to/the/script.sh</string>
     </array>
     <key>RunAtLoad</key>
     <true/>

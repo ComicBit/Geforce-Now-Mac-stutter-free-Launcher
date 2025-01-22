@@ -1,58 +1,62 @@
-# GeForce NOW Mac stutter free launcher
+# GeForce NOW Mac Stutter-Free Launcher
 
-This project is like a traffic controller for your Mac’s network. It ensures smoother gameplay on **GeForce NOW** by temporarily switching off a little-known "hidden network" (called **AWDL**) that can cause hiccups, and turns it back on when you’re done gaming. Think of it as flipping a switch for better performance!
+This project provides a reliable solution to improve the performance of **GeForce NOW** on macOS by managing the AWDL (Apple Wireless Direct Link) network interface. By disabling AWDL when GeForce NOW is running and re-enabling it when the application is closed, the tool eliminates potential network interference, ensuring a smoother gaming experience.
 
 ---
 
 ## What It Does
-- **Pauses AWDL**: When you start GeForce NOW, it pauses AWDL (a network interface for things like AirDrop and Handoff).
-- **Restarts AWDL**: When you close GeForce NOW, it restarts AWDL so everything works like normal.
-- **Why This Matters**: AWDL can sometimes create interference, making games laggy or unstable on macOS. This tool prevents that.
+- **Disables AWDL**: When GeForce NOW starts, it disables AWDL (used by features like AirDrop and Handoff) to prevent network interference.
+- **Re-enables AWDL**: Once GeForce NOW exits, AWDL is re-enabled to restore full functionality of macOS features.
+- **Purpose**: AWDL can cause latency and instability during gaming. This tool provides an automated solution to address these issues.
 
 ---
 
 ## How to Set It Up
 
 ### 1. **Download the Tool**
-Grab the tool from the GitHub repository:
+Clone the repository to your local system:
 ```bash
 git clone <https://github.com/ComicBit/Geforce-Now-Mac-stutter-free-Launcher>
 cd Geforce-Now-Mac-stutter-free-Launcher
 ```
 
-### 2. **Make the Script Work**
-Turn on permissions for the script:
+### 2. **Make the Script Executable**
+Ensure the script has the necessary permissions to run:
 ```bash
 chmod +x script.sh
 ```
 
-### 3. **Set Up No-Password Mode**
-The script uses some commands that need administrative permissions. We’ll make it smoother by skipping the password prompt for this task:
+### 3. **Set Up Non-Interactive Execution**
+To allow the script to execute system commands without prompting for a password:
 ```bash
 EDITOR=nano sudo visudo
 ```
-Add this line (replacing `yourusername` with your Mac’s username):
+Add the following lines, replacing `yourusername` with your macOS username:
 ```bash
 yourusername ALL=(ALL) NOPASSWD: /sbin/ifconfig awdl0 down
 yourusername ALL=(ALL) NOPASSWD: /sbin/ifconfig awdl0 up
 ```
 
-### 4. **Link It to Your System**
-Move the `com.geforcenow.awdlcontrol.plist` file to your Mac's system folder:
+### 4. **Configure the Launch Agent**
+Move the `com.geforcenow.awdlcontrol.plist` file to the appropriate directory:
 ```bash
 cp com.geforcenow.awdlcontrol.plist ~/Library/LaunchAgents/
 ```
 
-Now, open the `.plist` file and edit it to include the **correct path** to `script.sh`. Make sure the file points exactly where you saved the script.
+Edit the `.plist` file to include the **full path** to the `script.sh` file. Open it with a text editor and replace `/path/to/the/script.sh` with the exact location of the script on your system. For example:
+```xml
+<string>/Users/yourusername/Geforce-Now-Mac-stutter-free-Launcher/script.sh</string>
+```
+Ensure the path matches the location where the script is saved.
 
 ---
 
-### 5. **Activate the Tool**
-Start the tool so it runs automatically:
+### 5. **Activate the Launch Agent**
+Load the Launch Agent to enable automatic execution:
 ```bash
 launchctl load ~/Library/LaunchAgents/com.geforcenow.awdlcontrol.plist
 ```
-Check if it’s active:
+Verify that it is active:
 ```bash
 launchctl list | grep com.geforcenow.awdlcontrol
 ```
@@ -61,50 +65,51 @@ launchctl list | grep com.geforcenow.awdlcontrol
 
 ## How It Works
 When GeForce NOW launches:
-1. The **Launch Agent** detects it and runs the script.
-2. The script pauses AWDL, cutting out potential interference.
-3. When GeForce NOW closes, the script restarts AWDL.
+1. The **Launch Agent** detects the application startup and runs the script.
+2. The script disables AWDL to prevent network interference.
+3. When GeForce NOW is closed, the script re-enables AWDL to restore full system functionality.
 
 ---
 
 ## Uninstalling
-If you decide you no longer need this:
-1. Stop the tool:
+If you no longer require this tool:
+1. Unload the Launch Agent:
 ```bash
 launchctl unload ~/Library/LaunchAgents/com.geforcenow.awdlcontrol.plist
 ```
-2. Delete the files:
+2. Remove the files:
 ```bash
 rm ~/Library/LaunchAgents/com.geforcenow.awdlcontrol.plist
 rm /path/to/your/script.sh
 ```
-3. Clean up the password-free setup:
+3. Revert the `sudoers` file changes:
 ```bash
 EDITOR=nano sudo visudo
 ```
-Remove the two lines you added earlier for `ifconfig`.
+Delete the lines added for `ifconfig` commands.
 
 ---
 
-## Common Issues & Fixes
+## Troubleshooting
 
-### 1. **It’s Not Working**
-- Check if it’s running:
+### 1. **Launch Agent Not Running**
+- Check if the Launch Agent is loaded:
 ```bash
 launchctl list | grep com.geforcenow.awdlcontrol
 ```
-- Look for typos in the `.plist` file or the script path.
+- Verify the script path in the `.plist` file is correct.
 
-### 2. **Still Asking for Password**
-- Double-check you added the right lines in the `sudoers` file.
+### 2. **Password Prompts for `sudo`**
+- Ensure the `sudoers` file includes the necessary lines for non-interactive execution.
 
-### 3. **AWDL Doesn’t Turn Off**
-- Test the command manually:
+### 3. **AWDL Not Disabling or Enabling**
+- Test the commands manually:
 ```bash
 sudo ifconfig awdl0 down
+sudo ifconfig awdl0 up
 ```
-If it doesn’t work, your macOS settings (like System Integrity Protection) might need adjustments.
+If these commands fail, check macOS security settings such as System Integrity Protection.
 
 ---
 
-This tool is a simple yet effective fix for smoother GeForce NOW gaming on macOS. It’s like having a smart assistant manage your network in the background. Happy gaming! 🎮
+This tool provides an automated, efficient solution for reducing latency and network issues while using GeForce NOW on macOS. For any further issues or improvements, consult the project repository. Enjoy smoother gaming!
