@@ -110,6 +110,14 @@ sudo ifconfig awdl0 up
 ```
 If these commands fail, check macOS security settings such as System Integrity Protection.
 
+### 4. **Verify Script Functionality**
+To check if the script is working correctly, run the following command in the terminal:
+```bash
+ifconfig awdl0
+```
+- When GeForce NOW is open, the output should include `status: inactive`.
+- When GeForce NOW is closed, the output should include `status: active`.
+
 ---
 
 This tool provides an automated, efficient solution for reducing latency and network issues while using GeForce NOW on macOS. For any further issues or improvements, consult the project repository. Enjoy smoother gaming!
